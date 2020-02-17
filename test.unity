@@ -447,7 +447,7 @@ MonoBehaviour:
   characterName: Player 1
   grounded: 1
   sendingData: 0
-  networkCharacter: {fileID: 2347662404431550342, guid: 4d7803c149e1fc9419763b914b65a72b,
+  networkCharacter: {fileID: 351256095273851641, guid: 08d24d385e5c23d47a1380de3bf5b2b4,
     type: 3}
   networkCharacters:
   - {fileID: 0}
