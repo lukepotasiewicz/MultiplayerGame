@@ -4,7 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using client;
 
-public class character : MonoBehaviour {
+public class Character : MonoBehaviour {
     public float speed;
     public string characterName;
 
@@ -13,7 +13,11 @@ public class character : MonoBehaviour {
     private int direction = 1;
     public bool sendingData = false;
 
-    public GameObject trail;
+    public GameObject networkCharacter;
+
+    public GameObject[] networkCharacters = new GameObject[10];
+    public static string[] serverData;
+    public int numPlayers = 0;
 
     public Rigidbody2D rb2d;
 
@@ -37,7 +41,7 @@ public class character : MonoBehaviour {
     void FixedUpdate() {
         if (!sendingData) {
             var position = gameObject.transform.position;
-            var data = characterName + "," + position.x + "," + position.y;
+            var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," + rb2d.velocity.y;
             sendingData = true;
             StartCoroutine(sendData(data));
         }
@@ -77,31 +81,25 @@ public class character : MonoBehaviour {
         anim.SetBool("walking", moving);
     }
     
-    public static Vector2 StringToData(string sVector)
-    {
-        string[] sArray = sVector.Split(',');
-        
-        Vector2 result = new Vector2(
-            float.Parse(sArray[1]),
-            float.Parse(sArray[2]));
- 
-        return result;
-    }
     
     IEnumerator sendData(string data) {
-        try {
+        // try {
             string response = NetworkClient.Receive();
             if (response.Length > 1) {
-                trail.transform.SetPositionAndRotation(StringToData(response),
-                    Quaternion.Euler(new Vector3(0, 0, 0)));
+                serverData = response.Split(':');
+                for(var i = numPlayers; i < serverData.Length; i++) {
+                    networkCharacters[i] = Instantiate (networkCharacter, Vector3.zero, Quaternion.identity);
+                    networkCharacters[i].GetComponentInParent<NetworkCharacter> ().id = i;
+                }
+                numPlayers = serverData.Length;
             }
 
             NetworkClient.Send(data);
             sendingData = false;
-        }
-        catch (Exception e) {
-            Debug.Log(e);
-        }
+        // }
+        // catch (Exception e) {
+        //     Debug.Log(e);
+        // }
         yield return 0;
     }
 }
