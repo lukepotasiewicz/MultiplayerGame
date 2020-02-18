@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
 using client;
+using UnityEngine.UI;
 
 public class Character : MonoBehaviour {
     public float speed;
@@ -14,6 +15,7 @@ public class Character : MonoBehaviour {
     public bool sendingData = false;
 
     public GameObject networkCharacter;
+    public Text pingText;
 
     public GameObject[] networkCharacters = new GameObject[10];
     public static string[] serverData;
@@ -84,6 +86,7 @@ public class Character : MonoBehaviour {
     
     IEnumerator sendData(string data) {
         // try {
+            var timeStart = Time.time * 1000;
             string response = NetworkClient.Receive();
             if (response.Length > 1) {
                 serverData = response.Split(':');
@@ -93,9 +96,10 @@ public class Character : MonoBehaviour {
                 }
                 numPlayers = serverData.Length;
             }
-
             NetworkClient.Send(data);
             sendingData = false;
+            var ping = Time.time * 1000 - timeStart;
+            pingText.text = "Ping: " + ping;
         // }
         // catch (Exception e) {
         //     Debug.Log(e);
