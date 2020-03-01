@@ -18,7 +18,7 @@ public class Character : MonoBehaviour {
     public Text pingText;
 
     public GameObject[] networkCharacters = new GameObject[10];
-    public static string[] serverData;
+    public static string[] serverData = new string[0];
     public int numPlayers = 0;
 
     public Rigidbody2D rb2d;
@@ -35,16 +35,22 @@ public class Character : MonoBehaviour {
         moving = false;
         NetworkClient.Connect("73.219.102.187");
     }
-    
-    void OnApplicationQuit()
-    {
+
+    void OnApplicationQuit() {
         NetworkClient.Close();
         Debug.Log("Application ending after " + Time.time + " seconds");
     }
 
     // Update is called once per frame
     void FixedUpdate() {
-
+        if (serverData.Length > 0) {
+            for (var i = numPlayers; i < serverData.Length; i++) {
+                networkCharacters[i] = Instantiate(networkCharacter, Vector3.zero, Quaternion.identity);
+                networkCharacters[i].GetComponentInParent<NetworkCharacter>().id = i;
+            }
+            numPlayers = serverData.Length;
+        }
+        
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
         if (Input.GetKey(KeyCode.A)) {
@@ -79,32 +85,30 @@ public class Character : MonoBehaviour {
     async void Update() {
         if (!sendingData) {
             var position = gameObject.transform.position;
-            var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," + rb2d.velocity.y;
+            var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," +
+                       rb2d.velocity.y;
             sendingData = true;
             await Task.Run(() => sendData(data));
-            
+
             var ping = Time.time * 1000 - timeStart;
             pingText.text = "Ping: " + Math.Floor(ping);
             timeStart = Time.time * 1000;
-            
         }
+
         anim.SetBool("walking", moving);
     }
-    
-    
+
+
     async Task<int> sendData(string data) {
         // try {
-            string response = NetworkClient.Receive();
-            if (response.Length > 1) {
-                serverData = response.Split(':');
-                for(var i = numPlayers; i < serverData.Length; i++) {
-                    networkCharacters[i] = Instantiate (networkCharacter, Vector3.zero, Quaternion.identity);
-                    networkCharacters[i].GetComponentInParent<NetworkCharacter> ().id = i;
-                }
-                numPlayers = serverData.Length;
-            }
-            NetworkClient.Send(data);
-            sendingData = false;
+        string response = NetworkClient.Receive();
+        if (response.Length > 1) {
+            serverData = response.Split(':');
+
+        }
+
+        NetworkClient.Send(data);
+        sendingData = false;
         // }
         // catch (Exception e) {
         //     Debug.Log(e);
