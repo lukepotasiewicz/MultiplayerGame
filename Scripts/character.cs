@@ -25,12 +25,15 @@ public class Character : MonoBehaviour {
 
     private Animator anim;
 
+    private float timeStart;
+
     // Use this for initialization
     void Start() {
+        timeStart = Time.time;
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
         moving = false;
-        NetworkClient.Connect("192.168.0.110");
+        NetworkClient.Connect("73.219.102.187");
     }
     
     void OnApplicationQuit()
@@ -41,12 +44,6 @@ public class Character : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
-        if (!sendingData) {
-            var position = gameObject.transform.position;
-            var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," + rb2d.velocity.y;
-            sendingData = true;
-            StartCoroutine(sendData(data));
-        }
 
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
@@ -79,14 +76,24 @@ public class Character : MonoBehaviour {
         gameObject.transform.localScale = new Vector2(direction, 1);
     }
 
-    void Update() {
+    async void Update() {
+        if (!sendingData) {
+            var position = gameObject.transform.position;
+            var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," + rb2d.velocity.y;
+            sendingData = true;
+            await Task.Run(() => sendData(data));
+            
+            var ping = Time.time * 1000 - timeStart;
+            pingText.text = "Ping: " + Math.Floor(ping);
+            timeStart = Time.time * 1000;
+            
+        }
         anim.SetBool("walking", moving);
     }
     
     
-    IEnumerator sendData(string data) {
+    async Task<int> sendData(string data) {
         // try {
-            var timeStart = Time.time * 1000;
             string response = NetworkClient.Receive();
             if (response.Length > 1) {
                 serverData = response.Split(':');
@@ -98,12 +105,10 @@ public class Character : MonoBehaviour {
             }
             NetworkClient.Send(data);
             sendingData = false;
-            var ping = Time.time * 1000 - timeStart;
-            pingText.text = "Ping: " + ping;
         // }
         // catch (Exception e) {
         //     Debug.Log(e);
         // }
-        yield return 0;
+        return 0;
     }
 }
