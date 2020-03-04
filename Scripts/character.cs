@@ -4,6 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using client;
 using UnityEngine.UI;
+using static TextInput;
 
 public class Character : MonoBehaviour {
     public float speed;
@@ -13,6 +14,7 @@ public class Character : MonoBehaviour {
     private bool moving;
     private int direction = 1;
     public bool sendingData = false;
+    public bool connectionCreated = false;
 
     public GameObject networkCharacter;
     public Text pingText;
@@ -33,7 +35,7 @@ public class Character : MonoBehaviour {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
         moving = false;
-        NetworkClient.Connect("73.219.102.187");
+        // NetworkClient.Connect("10.245.194.6");
     }
 
     void OnApplicationQuit() {
@@ -83,7 +85,11 @@ public class Character : MonoBehaviour {
     }
 
     async void Update() {
-        if (!sendingData) {
+    	if (!connectionCreated && TextInput.IP.Length > 1) {
+        	NetworkClient.Connect(TextInput.IP);
+        	connectionCreated = true;
+    	}
+        if (connectionCreated && !sendingData) {
             var position = gameObject.transform.position;
             var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," +
                        rb2d.velocity.y;

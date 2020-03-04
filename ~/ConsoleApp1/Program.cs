@@ -15,7 +15,7 @@ namespace ServerTest {
             Console.ReadLine();
         }
 
-        TcpListener server = new TcpListener(IPAddress.Parse("192.168.0.110"), 4242);
+        TcpListener server = new TcpListener(IPAddress.Parse("10.245.12.29"), 4242);
 
         private void server_start() {
             server.Start();
