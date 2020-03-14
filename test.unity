@@ -525,7 +525,8 @@ MonoBehaviour:
   speed: 6
   characterName: test
   grounded: 0
-  sendingData: 1
+  sendingData: 0
+  connectionCreated: 0
   networkCharacter: {fileID: 351256095273851641, guid: 08d24d385e5c23d47a1380de3bf5b2b4,
     type: 3}
   pingText: {fileID: 886220195}

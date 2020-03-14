@@ -15,7 +15,7 @@ namespace ServerTest {
             Console.ReadLine();
         }
 
-        TcpListener server = new TcpListener(IPAddress.Parse("10.245.12.29"), 4242);
+        TcpListener server = new TcpListener(IPAddress.Parse("127.0.0.1"), 4242);
 
         private void server_start() {
             server.Start();
@@ -51,7 +51,7 @@ namespace ServerTest {
                     // remove weird mystery character that causes packets to be broken up
                     userData[connectionId] = messageFromClient.TrimEnd(messageFromClient[^1]);
 
-                    System.Threading.Thread.Sleep(10);
+                    // System.Threading.Thread.Sleep(100);
                     
                     string dataToSend = "  ";
                     bool first = true;
@@ -68,6 +68,7 @@ namespace ServerTest {
                     }
                     byte[] response = new byte[200];
                     response = Encoding.Default.GetBytes(dataToSend);
+                    // send to unity
                     stream.Write(response, 0, response.Length);
                     Console.WriteLine(dataToSend);
                 }
