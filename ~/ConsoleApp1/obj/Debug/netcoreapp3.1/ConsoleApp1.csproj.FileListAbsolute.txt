@@ -9,14 +9,3 @@ C:\Users\Luke\RiderProjects\ConsoleApp1\ConsoleApp1\obj\Debug\netcoreapp3.1\Cons
 C:\Users\Luke\RiderProjects\ConsoleApp1\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.AssemblyInfo.cs
 C:\Users\Luke\RiderProjects\ConsoleApp1\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.dll
 C:\Users\Luke\RiderProjects\ConsoleApp1\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.pdb
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.exe
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.deps.json
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.runtimeconfig.json
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.runtimeconfig.dev.json
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.dll
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.pdb
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.csprojAssemblyReference.cache
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.AssemblyInfoInputs.cache
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.AssemblyInfo.cs
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.dll
-C:\Users\lukep\Documents\Independent Study\Assets\~\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.pdb

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using static TextInput;
 
 public class Character : MonoBehaviour {
+    private const string END_CONNECTION = "EC";
     public float speed;
     public string characterName;
 
@@ -39,6 +40,7 @@ public class Character : MonoBehaviour {
     }
 
     void OnApplicationQuit() {
+        NetworkClient.Send(END_CONNECTION);
         NetworkClient.Close();
         Debug.Log("Application ending after " + Time.time + " seconds");
     }
@@ -46,9 +48,11 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate() {
         if (serverData.Length > 0) {
-            for (var i = numPlayers; i < serverData.Length; i++) {
-                networkCharacters[i] = Instantiate(networkCharacter, Vector3.zero, Quaternion.identity);
-                networkCharacters[i].GetComponentInParent<NetworkCharacter>().id = i;
+            if (serverData[0] != END_CONNECTION) {
+                for (var i = numPlayers; i < serverData.Length; i++) {
+                    networkCharacters[i] = Instantiate(networkCharacter, Vector3.zero, Quaternion.identity);
+                    networkCharacters[i].GetComponentInParent<NetworkCharacter>().id = i;
+                }
             }
             numPlayers = serverData.Length;
         }

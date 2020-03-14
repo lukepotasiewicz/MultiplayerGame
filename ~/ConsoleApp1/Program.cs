@@ -3,8 +3,10 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 
+
 namespace ServerTest {
     class Program {
+        const string END_CONNECTION = "EC";
         private static string[] userData = new string[10]{"","","","","","","","","",""};
         private static int connections = 0;
         
@@ -50,8 +52,11 @@ namespace ServerTest {
                     String messageFromClient = Encoding.UTF8.GetString(msg).Trim(' ');
                     // remove weird mystery character that causes packets to be broken up
                     userData[connectionId] = messageFromClient.TrimEnd(messageFromClient[^1]);
+                    if (userData[connectionId] == END_CONNECTION) {
+                        break;
+                    }
 
-                    // System.Threading.Thread.Sleep(100);
+                    System.Threading.Thread.Sleep(10);
                     
                     string dataToSend = "  ";
                     bool first = true;
@@ -68,7 +73,6 @@ namespace ServerTest {
                     }
                     byte[] response = new byte[200];
                     response = Encoding.Default.GetBytes(dataToSend);
-                    // send to unity
                     stream.Write(response, 0, response.Length);
                     Console.WriteLine(dataToSend);
                 }
