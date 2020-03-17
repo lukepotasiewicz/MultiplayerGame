@@ -21,19 +21,15 @@ public class NetworkCharacter : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         string[] myData = Character.serverData[id].Split(',');
-        animState = Int32.Parse(myData[5]);
-        health = Int32.Parse(myData[6]);
+        direction = Int32.Parse(myData[5]);
+        animState = Int32.Parse(myData[6]);
+        health = Int32.Parse(myData[7]);
         
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
             Quaternion.Euler(new Vector3(0, 0, 0))
         );
-        if (ServerDataToVelocity(myData).x > 0) {
-            direction = 1;
-        }
-        else if (ServerDataToVelocity(myData).x < 0) {
-            direction = -1;
-        }
+        
         gameObject.transform.localScale = new Vector2(direction, 1);
 
         if (animState < 10) {

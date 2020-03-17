@@ -122,7 +122,7 @@ public class Character : MonoBehaviour {
         if (connectionCreated && !sendingData) {
             var position = gameObject.transform.position;
             var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," +
-                       rb2d.velocity.y + "," + animState + "," + health;
+                       rb2d.velocity.y + "," + direction + "," + animState + "," + health;
             sendingData = true;
             await Task.Run(() => sendData(data));
 
