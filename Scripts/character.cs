@@ -109,8 +109,12 @@ public class Character : MonoBehaviour {
         
         if (health > 3) {
             health = 3;
-        } else if (health < 0) {
-            health = 0;
+        } else if (health <= 0) {
+            gameObject.transform.SetPositionAndRotation(
+                new Vector3(0, 0, 0),
+                Quaternion.Euler(new Vector3(0, 0, 0))
+            );
+            health = 3;
         }
         heathBar.transform.localScale = new Vector2(health/3 , 1);
         
