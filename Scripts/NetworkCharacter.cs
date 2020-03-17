@@ -5,30 +5,41 @@ using UnityEngine;
 
 public class NetworkCharacter : MonoBehaviour {
     public int id;
+    public int direction = 1;
     public float health = 3;
+    public int animState = 0;
 
     public GameObject heathBar;
+    
+    private Animator anim;
 
     // Start is called before the first frame update
     void Start() {
+        anim = gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update() {
         string[] myData = Character.serverData[id].Split(',');
+        animState = Int32.Parse(myData[5]);
         health = Int32.Parse(myData[6]);
+        
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
             Quaternion.Euler(new Vector3(0, 0, 0))
         );
         if (ServerDataToVelocity(myData).x > 0) {
-            gameObject.transform.localScale = new Vector2(1, 1);
+            direction = 1;
         }
-        else {
-            gameObject.transform.localScale = new Vector2(-1, 1);
+        else if (ServerDataToVelocity(myData).x < 0) {
+            direction = -1;
         }
+        gameObject.transform.localScale = new Vector2(direction, 1);
 
-        gameObject.GetComponentInChildren<attack>().animState = Int32.Parse(myData[5]);
+        if (animState < 10) {
+            anim.SetInteger("animState", animState);
+        }
+        gameObject.GetComponentInChildren<attack>().animState = animState;
         heathBar.transform.localScale = new Vector2( health / 3, 1);
     }
 
