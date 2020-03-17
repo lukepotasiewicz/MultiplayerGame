@@ -35,6 +35,7 @@ public class NetworkCharacter : MonoBehaviour {
         if (animState < 10) {
             anim.SetInteger("animState", animState);
         }
+        anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 0.1);
         gameObject.GetComponentInChildren<attack>().animState = animState;
         heathBar.transform.localScale = new Vector2( health / 3, 1);
     }

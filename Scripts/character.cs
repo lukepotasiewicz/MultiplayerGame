@@ -49,13 +49,12 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate() {
         if (serverData.Length > 0) {
-            if (serverData[0] != END_CONNECTION) {
-                for (var i = numPlayers; i < serverData.Length; i++) {
+            for (var i = numPlayers; i < serverData.Length; i++) {
+                if (serverData[i] != END_CONNECTION) {
                     networkCharacters[i] = Instantiate(networkCharacter, Vector3.zero, Quaternion.identity);
                     networkCharacters[i].GetComponentInParent<NetworkCharacter>().id = i;
                 }
             }
-
             numPlayers = serverData.Length;
         }
 
@@ -80,9 +79,7 @@ public class Character : MonoBehaviour {
             if (Input.GetKey(KeyCode.Mouse0) && animState != 1) {
                 anim.SetInteger("animState", 1);
                 animState = 1;
-                StartCoroutine(delay(() => {
-                    animState = 11;
-                }, 0.2f));
+                StartCoroutine(delay(() => { animState = 11; }, 0.2f));
                 StartCoroutine(delay(() => {
                     anim.SetInteger("animState", 0);
                     animState = 0;
@@ -95,9 +92,11 @@ public class Character : MonoBehaviour {
 
             gameObject.transform.localScale = new Vector2(direction, 1);
         }
+
         if (!moving && grounded) {
             rb2d.velocity = new Vector2(rb2d.velocity.x * 0.8f, movement.y);
-        } else if (!moving && !grounded) {
+        }
+        else if (!moving && !grounded) {
             rb2d.velocity = new Vector2(rb2d.velocity.x * 0.96f, movement.y);
         }
     }
@@ -106,18 +105,20 @@ public class Character : MonoBehaviour {
         if (Time.time * 1000 - timeStart > 1000 && connectionCreated) {
             NetworkClient.Send("hack fix");
         }
-        
+
         if (health > 3) {
             health = 3;
-        } else if (health <= 0) {
+        }
+        else if (health <= 0) {
             gameObject.transform.SetPositionAndRotation(
                 new Vector3(0, 0, 0),
                 Quaternion.Euler(new Vector3(0, 0, 0))
             );
             health = 3;
         }
-        heathBar.transform.localScale = new Vector2(health/3 , 1);
-        
+
+        heathBar.transform.localScale = new Vector2(health / 3, 1);
+
         if (!connectionCreated && TextInput.IP.Length > 1) {
             NetworkClient.Connect(TextInput.IP);
             connectionCreated = true;
