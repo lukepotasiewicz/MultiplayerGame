@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NetworkCharacter : MonoBehaviour {
     public int id;
+    public float health = 3;
+
+    public GameObject heathBar;
 
     // Start is called before the first frame update
     void Start() {
@@ -11,7 +15,8 @@ public class NetworkCharacter : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        string myData = Character.serverData[id];
+        string[] myData = Character.serverData[id].Split(',');
+        health = Int32.Parse(myData[6]);
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
             Quaternion.Euler(new Vector3(0, 0, 0))
@@ -22,19 +27,19 @@ public class NetworkCharacter : MonoBehaviour {
         else {
             gameObject.transform.localScale = new Vector2(-1, 1);
         }
+
+        gameObject.GetComponentInChildren<attack>().animState = Int32.Parse(myData[5]);
+        heathBar.transform.localScale = new Vector2( health / 3, 1);
     }
 
-    public static Vector2 ServerDataToPosition(string sVector) {
-        string[] sArray = sVector.Split(',');
-
+    public static Vector2 ServerDataToPosition(string[] sArray) {
         Vector2 result = new Vector2(
             float.Parse(sArray[1]),
             float.Parse(sArray[2]));
 
         return result;
     }
-    public static Vector2 ServerDataToVelocity(string sVector) {
-        string[] sArray = sVector.Split(',');
+    public static Vector2 ServerDataToVelocity(string[] sArray) {
 
         Vector2 result = new Vector2(
             float.Parse(sArray[3]),
