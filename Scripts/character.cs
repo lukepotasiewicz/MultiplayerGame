@@ -103,6 +103,10 @@ public class Character : MonoBehaviour {
     }
 
     async void Update() {
+        if (Time.time * 1000 - timeStart > 1000 && connectionCreated) {
+            NetworkClient.Send("hack fix");
+        }
+        
         if (health > 3) {
             health = 3;
         } else if (health < 0) {

@@ -469,7 +469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  characterName: 
+  characterName: main
   grounded: 0
   sendingData: 0
   connectionCreated: 0
