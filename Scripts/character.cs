@@ -62,7 +62,7 @@ public class Character : MonoBehaviour {
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
         if (animState == 0) {
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Mouse0)) {
+            if (Input.GetKey(KeyCode.LeftShift)) {
                 blocking = 1;
                 anim.SetInteger("blocking", 1);
             }
@@ -88,7 +88,7 @@ public class Character : MonoBehaviour {
             if (Input.GetKey(KeyCode.Mouse0) && animState != 1 && blocking == 0) {
                 anim.SetInteger("animState", 1);
                 animState = 1;
-                StartCoroutine(delay(() => { animState = 11; }, 0.2f));
+                StartCoroutine(delay(() => { animState = 11; }, 0.3f));
                 StartCoroutine(delay(() => {
                     anim.SetInteger("animState", 0);
                     animState = 0;
