@@ -22,6 +22,8 @@ public class Character : MonoBehaviour {
     public GameObject networkCharacter;
     public Text pingText;
     public GameObject heathBar;
+    public GameObject nameTextObj;
+    private Text nameText;
 
     public GameObject[] networkCharacters = new GameObject[10];
     public static string[] serverData = new string[0];
@@ -38,6 +40,7 @@ public class Character : MonoBehaviour {
         timeStart = Time.time;
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
+        nameText = nameTextObj.GetComponent<Text>();
     }
 
     void OnApplicationQuit() {
@@ -115,6 +118,9 @@ public class Character : MonoBehaviour {
     }
 
     async void Update() {
+        nameText.text = characterName;
+        nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
+        
         if (Time.time * 1000 - timeStart > 1000 && connectionCreated) {
             NetworkClient.Send("hack fix");
         }
@@ -133,6 +139,7 @@ public class Character : MonoBehaviour {
         heathBar.transform.localScale = new Vector2(health / 3, 1);
 
         if (!connectionCreated && TextInput.IP.Length > 1) {
+            characterName = TextInput.NAME;
             NetworkClient.Connect(TextInput.IP);
             connectionCreated = true;
         }

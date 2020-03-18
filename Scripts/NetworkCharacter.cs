@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkCharacter : MonoBehaviour {
     public int id;
@@ -13,16 +14,21 @@ public class NetworkCharacter : MonoBehaviour {
     
     public Rigidbody2D rb2d;
     private Animator anim;
+    public GameObject nameTextObj;
+    private Text nameText;
 
     // Start is called before the first frame update
     void Start() {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
+        nameText = nameTextObj.GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update() {
         string[] myData = Character.serverData[id].Split(',');
+        nameText.text = myData[0];
+        nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
         direction = Int32.Parse(myData[5]);
         animState = Int32.Parse(myData[6]);
         health = Int32.Parse(myData[7]);
