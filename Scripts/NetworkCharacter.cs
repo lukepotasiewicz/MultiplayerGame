@@ -11,10 +11,12 @@ public class NetworkCharacter : MonoBehaviour {
 
     public GameObject heathBar;
     
+    public Rigidbody2D rb2d;
     private Animator anim;
 
     // Start is called before the first frame update
     void Start() {
+        rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
     }
 
@@ -36,6 +38,7 @@ public class NetworkCharacter : MonoBehaviour {
             anim.SetInteger("animState", animState);
         }
         anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 0.1);
+        rb2d.velocity = ServerDataToVelocity(myData);
         gameObject.GetComponentInChildren<attack>().animState = animState;
         heathBar.transform.localScale = new Vector2( health / 3, 1);
     }

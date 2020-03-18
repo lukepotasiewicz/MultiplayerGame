@@ -15,6 +15,7 @@ public class Character : MonoBehaviour {
     public bool connectionCreated = false;
     public int animState = 0;
     public float health = 3;
+    public int blocking = 0;
     private bool moving;
     private int direction = 1;
 
@@ -37,7 +38,6 @@ public class Character : MonoBehaviour {
         timeStart = Time.time;
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
-        moving = false;
     }
 
     void OnApplicationQuit() {
@@ -60,7 +60,16 @@ public class Character : MonoBehaviour {
 
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
+
         if (animState == 0) {
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.Mouse0)) {
+                blocking = 1;
+                anim.SetInteger("blocking", 1);
+            }
+            else {
+                blocking = 0;
+                anim.SetInteger("blocking", 0);
+            }
             if (Input.GetKey(KeyCode.A)) {
                 direction = -1;
                 movement.x = -1;
@@ -76,7 +85,7 @@ public class Character : MonoBehaviour {
                 movement.y = 10;
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) && animState != 1) {
+            if (Input.GetKey(KeyCode.Mouse0) && animState != 1 && blocking == 0) {
                 anim.SetInteger("animState", 1);
                 animState = 1;
                 StartCoroutine(delay(() => { animState = 11; }, 0.2f));
@@ -84,6 +93,10 @@ public class Character : MonoBehaviour {
                     anim.SetInteger("animState", 0);
                     animState = 0;
                 }, 0.4f));
+            }
+
+            if (blocking != 0) {
+                moving = false;
             }
 
             if (moving) {
