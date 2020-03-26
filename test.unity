@@ -469,13 +469,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 6
-  characterName: main
+  characterName: name
   grounded: 0
   sendingData: 0
   connectionCreated: 0
   animState: 0
   health: 3
-  blocking: 0
   networkCharacter: {fileID: 184634227672380312, guid: 246cfe6884dc4814690c03e82a95329b,
     type: 3}
   pingText: {fileID: 886220195}

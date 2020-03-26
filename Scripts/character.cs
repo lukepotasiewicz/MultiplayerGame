@@ -15,7 +15,6 @@ public class Character : MonoBehaviour {
     public bool connectionCreated = false;
     public int animState = 0;
     public float health = 3;
-    public int blocking = 0;
     private bool moving;
     private int direction = 1;
 
@@ -64,14 +63,14 @@ public class Character : MonoBehaviour {
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
-        if (animState == 0) {
+        if (animState == 0 || animState == 3) {
             if (Input.GetKey(KeyCode.LeftShift)) {
-                blocking = 1;
-                anim.SetInteger("blocking", 1);
+                animState = 3;
+                anim.SetInteger("animState", 3);
             }
             else {
-                blocking = 0;
-                anim.SetInteger("blocking", 0);
+                animState = 0;
+                anim.SetInteger("animState", 0);
             }
             if (Input.GetKey(KeyCode.A)) {
                 direction = -1;
@@ -84,11 +83,11 @@ public class Character : MonoBehaviour {
                 moving = true;
             }
 
-            if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W)) && grounded) {
+            if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.W)) && grounded && animState != 3) {
                 movement.y = 10;
             }
 
-            if (Input.GetKey(KeyCode.Mouse0) && animState != 1 && blocking == 0) {
+            if (Input.GetKey(KeyCode.Mouse0) && animState == 0) {
                 anim.SetInteger("animState", 1);
                 animState = 1;
                 StartCoroutine(delay(() => { animState = 11; }, 0.3f));
@@ -98,7 +97,7 @@ public class Character : MonoBehaviour {
                 }, 0.4f));
             }
 
-            if (blocking != 0) {
+            if (animState != 0) {
                 moving = false;
             }
 

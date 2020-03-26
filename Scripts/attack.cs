@@ -8,7 +8,7 @@ public class attack : MonoBehaviour {
     public int animState = 0;
     void OnTriggerStay2D(Collider2D other) {
         if (other.gameObject.tag == "Player" && canHit && animState == 11) {
-            if (other.GetComponentInParent<Character>().blocking != 1) {
+            if (other.GetComponentInParent<Character>().animState != 3) {
                 other.GetComponentInParent<Character>().health -= 1;
             }
             canHit = false;
