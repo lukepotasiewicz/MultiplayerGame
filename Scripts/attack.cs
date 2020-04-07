@@ -4,25 +4,29 @@ using UnityEngine;
 
 public class attack : MonoBehaviour {
 
+    public int blockingState;
+    public int attackingState;
+    
     public bool canHit = true;
-    public int animState = 0;
-    public int direction = 0;
-    public AudioClip block1;
+    public AudioClip blockSound;
+
     void OnTriggerStay2D(Collider2D other) {
-        if (other.gameObject.tag == "Player" && canHit && animState == 11) {
+        var parent = transform.parent.gameObject.GetComponent<NetworkCharacter>();
+        int animState = parent.animState;
+        int direction = parent.direction;
+        if (other.gameObject.tag == "Player" && canHit && animState == attackingState) {
             // true if player isn't blocking
-            if (other.GetComponentInParent<Character>().animState == 3) {
+            if (other.GetComponentInParent<Character>().animState == blockingState) {
                 // true if players are facing each other
                 if (other.GetComponentInParent<Character>().direction != direction) {
                     // blocked
-                    gameObject.GetComponent<AudioSource>().PlayOneShot(block1, 0.8f);
+                    gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
                 }
                 else {
                     // hit
                     other.GetComponentInParent<Character>().health -= 1;
                 }
-            }
-            else {
+            } else {
                 // hit
                 other.GetComponentInParent<Character>().health -= 1;
             }

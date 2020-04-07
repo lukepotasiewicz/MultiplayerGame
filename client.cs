@@ -24,7 +24,7 @@ namespace client {
         public static void Send(String message) {
             Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);
             stream.Write(data, 0, data.Length);
-            Debug.Log("Sent: " + message);
+            // Debug.Log("Sent: " + message);
         }
 
         public static string Receive() {
@@ -37,7 +37,7 @@ namespace client {
             }
             String responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes);
             responseData = responseData.Replace(" ", "");
-            Debug.Log("Received: " + responseData);
+            // Debug.Log("Received: " + responseData);
             return responseData;
         }
 

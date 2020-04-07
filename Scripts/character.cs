@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using client;
 using UnityEngine.UI;
@@ -63,10 +64,16 @@ public class Character : MonoBehaviour {
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
-        if (animState == 0 || animState == 3) {
+        if (animState == 0 || animState == 3 || animState == 4) {
+            // block 1
             if (Input.GetKey(KeyCode.LeftShift)) {
                 animState = 3;
                 anim.SetInteger("animState", 3);
+            }
+            // block 2
+            else if (Input.GetKey(KeyCode.LeftControl)) {
+                animState = 4;
+                anim.SetInteger("animState", 4);
             }
             else {
                 animState = 0;
@@ -87,6 +94,7 @@ public class Character : MonoBehaviour {
                 movement.y = 10;
             }
 
+            // attack 1
             if (Input.GetKey(KeyCode.Mouse0) && animState == 0) {
                 anim.SetInteger("animState", 1);
                 animState = 1;
@@ -97,6 +105,18 @@ public class Character : MonoBehaviour {
                 }, 0.4f));
             }
 
+            // attack 2
+            if (Input.GetKey(KeyCode.Mouse1) && animState == 0) {
+                anim.SetInteger("animState", 2);
+                animState = 2;
+                StartCoroutine(delay(() => { animState = 22; }, 0.3f));
+                StartCoroutine(delay(() => {
+                    anim.SetInteger("animState", 0);
+                    animState = 0;
+                }, 0.4f));
+            }
+
+            // stop walking if doing any other animation
             if (animState != 0) {
                 moving = false;
             }
