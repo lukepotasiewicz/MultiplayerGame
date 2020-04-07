@@ -9,6 +9,8 @@ public class NetworkCharacter : MonoBehaviour {
     public int direction = 1;
     public float health = 3;
     public int animState = 0;
+    public string name;
+    public bool stunned = false;
 
     public GameObject heathBar;
     
@@ -28,10 +30,15 @@ public class NetworkCharacter : MonoBehaviour {
     void Update() {
         string[] myData = Character.serverData[id].Split(',');
         nameText.text = myData[0];
+        name = myData[0];
         nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
         direction = Int32.Parse(myData[5]);
         animState = Int32.Parse(myData[6]);
         health = Int32.Parse(myData[7]);
+        var blockedCharacters = myData[8];
+        // check if this network character was recently blocked
+        stunned = Array.IndexOf(blockedCharacters.Split('|'), name) != -1;
+        stunned = stunned || Array.IndexOf(Character.createBlockedString().Split('|'), name) != -1;
         
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),

@@ -18,11 +18,14 @@ public class Character : MonoBehaviour {
     public float health = 3;
     private bool moving;
     public int direction = 1;
+    public static string[] blockedCharacters = new string[10] {"", "", "", "", "", "", "", "", "", ""};
+    public bool stunned = false;
 
     public GameObject networkCharacter;
     public Text pingText;
     public GameObject heathBar;
     public GameObject nameTextObj;
+    public GameObject stunnedIndicator;
     private Text nameText;
 
     public GameObject[] networkCharacters = new GameObject[10];
@@ -64,6 +67,11 @@ public class Character : MonoBehaviour {
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
+        stunned = false;
+        foreach (var character in serverData) {
+            stunned = stunned || Array.IndexOf(character.Split(','), characterName) > 6;
+        }
+
         if (animState == 0 || animState == 3 || animState == 4) {
             // block 1
             if (Input.GetKey(KeyCode.LeftShift)) {
@@ -79,6 +87,7 @@ public class Character : MonoBehaviour {
                 animState = 0;
                 anim.SetInteger("animState", 0);
             }
+
             if (Input.GetKey(KeyCode.A)) {
                 direction = -1;
                 movement.x = -1;
@@ -94,27 +103,30 @@ public class Character : MonoBehaviour {
                 movement.y = 10;
             }
 
-            // attack 1
-            if (Input.GetKey(KeyCode.Mouse0) && animState == 0) {
-                anim.SetInteger("animState", 1);
-                animState = 1;
-                StartCoroutine(delay(() => { animState = 11; }, 0.3f));
-                StartCoroutine(delay(() => {
-                    anim.SetInteger("animState", 0);
-                    animState = 0;
-                }, 0.4f));
+            if (!stunned) {
+                // attack 1
+                if (Input.GetKey(KeyCode.Mouse0) && animState == 0) {
+                    anim.SetInteger("animState", 1);
+                    animState = 1;
+                    StartCoroutine(delay(() => { animState = 11; }, 0.3f));
+                    StartCoroutine(delay(() => {
+                        anim.SetInteger("animState", 0);
+                        animState = 0;
+                    }, 0.4f));
+                }
+
+                // attack 2
+                if (Input.GetKey(KeyCode.Mouse1) && animState == 0) {
+                    anim.SetInteger("animState", 2);
+                    animState = 2;
+                    StartCoroutine(delay(() => { animState = 22; }, 0.3f));
+                    StartCoroutine(delay(() => {
+                        anim.SetInteger("animState", 0);
+                        animState = 0;
+                    }, 0.4f));
+                }
             }
 
-            // attack 2
-            if (Input.GetKey(KeyCode.Mouse1) && animState == 0) {
-                anim.SetInteger("animState", 2);
-                animState = 2;
-                StartCoroutine(delay(() => { animState = 22; }, 0.3f));
-                StartCoroutine(delay(() => {
-                    anim.SetInteger("animState", 0);
-                    animState = 0;
-                }, 0.4f));
-            }
 
             // stop walking if doing any other animation
             if (animState != 0) {
@@ -122,7 +134,7 @@ public class Character : MonoBehaviour {
             }
 
             if (moving) {
-                rb2d.velocity = new Vector2(movement.x * speed, movement.y);
+                rb2d.velocity = new Vector2(movement.x * speed * (stunned ? 0.6f : 1f), movement.y);
             }
 
             gameObject.transform.localScale = new Vector2(direction, 1);
@@ -137,9 +149,17 @@ public class Character : MonoBehaviour {
     }
 
     async void Update() {
+        if (!stunned) {
+            stunnedIndicator.transform.localScale = new Vector2(0, 1);
+        }
+        else {
+            stunnedIndicator.transform.localScale = new Vector2(1, 1);
+        }
+
         nameText.text = characterName;
-        nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
-        
+        nameTextObj.transform.position =
+            Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
+
         if (Time.time * 1000 - timeStart > 1000 && connectionCreated) {
             NetworkClient.Send("hack fix");
         }
@@ -166,7 +186,7 @@ public class Character : MonoBehaviour {
         if (connectionCreated && !sendingData) {
             var position = gameObject.transform.position;
             var data = characterName + "," + position.x + "," + position.y + "," + rb2d.velocity.x + "," +
-                       rb2d.velocity.y + "," + direction + "," + animState + "," + health;
+                       rb2d.velocity.y + "," + direction + "," + animState + "," + health + "," + createBlockedString();
             sendingData = true;
             await Task.Run(() => sendData(data));
 
@@ -177,6 +197,28 @@ public class Character : MonoBehaviour {
 
 
         anim.SetBool("walking", moving);
+    }
+
+    public static String createBlockedString() {
+        string blockedString = "";
+        foreach (var character in blockedCharacters) {
+            if (character.Length != 0) {
+                blockedString += character + "|";
+            }
+        }
+
+        if (blockedString.Length > 0) {
+            return blockedString.Remove(blockedString.Length - 1, 1);
+        }
+        else {
+            return "0";
+        }
+    }
+
+    public void addBlockedCharacter(String name, float time) {
+        int index = Array.IndexOf(blockedCharacters, "");
+        blockedCharacters[index] = name;
+        StartCoroutine(delay(() => { blockedCharacters[index] = ""; }, time));
     }
 
     IEnumerator delay(Action func, float waitTime) {

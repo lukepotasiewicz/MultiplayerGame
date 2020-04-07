@@ -106,6 +106,8 @@ MonoBehaviour:
   direction: 1
   health: 3
   animState: 0
+  name: 
+  stunned: 0
   heathBar: {fileID: 184634228358285504}
   rb2d: {fileID: 0}
   nameTextObj: {fileID: 7914398241211566512}
@@ -442,7 +444,7 @@ MonoBehaviour:
   blockingState: 3
   attackingState: 11
   canHit: 1
-  blockSound: {fileID: 0}
+  blockSound: {fileID: 8300000, guid: a8f5f616a225e7d40afb70ad63abc22f, type: 3}
 --- !u!82 &5009812338366786955
 AudioSource:
   m_ObjectHideFlags: 0

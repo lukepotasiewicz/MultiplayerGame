@@ -21,6 +21,7 @@ public class attack : MonoBehaviour {
                 if (other.GetComponentInParent<Character>().direction != direction) {
                     // blocked
                     gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
+                    other.GetComponentInParent<Character>().addBlockedCharacter(parent.name, 1.0f);
                 }
                 else {
                     // hit
