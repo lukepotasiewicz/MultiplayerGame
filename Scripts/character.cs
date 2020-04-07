@@ -26,6 +26,7 @@ public class Character : MonoBehaviour {
     public GameObject heathBar;
     public GameObject nameTextObj;
     public GameObject stunnedIndicator;
+    public AudioClip blockSound;
     private Text nameText;
 
     public GameObject[] networkCharacters = new GameObject[10];
@@ -67,9 +68,15 @@ public class Character : MonoBehaviour {
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
+        bool wasStunned = stunned; 
         stunned = false;
+        // check to see if you are stunned
         foreach (var character in serverData) {
             stunned = stunned || Array.IndexOf(character.Split(','), characterName) > 6;
+        }
+        // play audio if was just stunned
+        if (!wasStunned && stunned) {
+            gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
         }
 
         if (animState == 0 || animState == 3 || animState == 4) {

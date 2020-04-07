@@ -113,6 +113,7 @@ MonoBehaviour:
   rb2d: {fileID: 0}
   nameTextObj: {fileID: 7914398241211566512}
   stunnedIndicator: {fileID: 1020738065783260994}
+  blockSound: {fileID: 8300000, guid: df9bfc8b32b8dcd4ab57586aea9fb651, type: 3}
 --- !u!95 &4015240321382416596
 Animator:
   serializedVersion: 3

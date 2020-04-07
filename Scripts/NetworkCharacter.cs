@@ -18,6 +18,7 @@ public class NetworkCharacter : MonoBehaviour {
     private Animator anim;
     public GameObject nameTextObj;
     public GameObject stunnedIndicator;
+    public AudioClip blockSound;
     private Text nameText;
 
     // Start is called before the first frame update
@@ -38,10 +39,15 @@ public class NetworkCharacter : MonoBehaviour {
         health = float.Parse(myData[7]);
         var blockedCharacters = myData[8];
         // check if this network character was recently blocked
+        bool wasStunned = stunned; 
         stunned = Array.IndexOf(blockedCharacters.Split('|'), name) != -1;
         stunned = stunned || Array.IndexOf(Character.createBlockedString().Split('|'), name) != -1;
         // show or hide stunned indicator
         stunnedIndicator.transform.localScale = new Vector2(stunned ? 1 : 0, 1);
+        // play audio if was just stunned
+        if (!wasStunned && stunned) {
+            gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
+        }
 
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
