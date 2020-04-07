@@ -11,7 +11,7 @@ public class attack : MonoBehaviour {
     void OnTriggerStay2D(Collider2D other) {
         if (other.gameObject.tag == "Player" && canHit && animState == 11) {
             // true if player isn't blocking
-            if (other.GetComponentInParent<Character>().animState != 3) {
+            if (other.GetComponentInParent<Character>().animState == 3) {
                 // true if players are facing each other
                 if (other.GetComponentInParent<Character>().direction != direction) {
                     // blocked
@@ -21,6 +21,10 @@ public class attack : MonoBehaviour {
                     // hit
                     other.GetComponentInParent<Character>().health -= 1;
                 }
+            }
+            else {
+                // hit
+                other.GetComponentInParent<Character>().health -= 1;
             }
             canHit = false;
             StartCoroutine(damageWait());
