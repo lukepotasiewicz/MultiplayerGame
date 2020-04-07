@@ -46,6 +46,7 @@ public class NetworkCharacter : MonoBehaviour {
         anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 0.1);
         rb2d.velocity = ServerDataToVelocity(myData);
         gameObject.GetComponentInChildren<attack>().animState = animState;
+        gameObject.GetComponentInChildren<attack>().direction = direction;
         heathBar.transform.localScale = new Vector2( health / 3, 1);
     }
 

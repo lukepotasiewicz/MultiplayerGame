@@ -475,6 +475,7 @@ MonoBehaviour:
   connectionCreated: 0
   animState: 0
   health: 3
+  direction: 1
   networkCharacter: {fileID: 184634227672380312, guid: 246cfe6884dc4814690c03e82a95329b,
     type: 3}
   pingText: {fileID: 886220195}

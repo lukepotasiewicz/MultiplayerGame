@@ -16,7 +16,7 @@ public class Character : MonoBehaviour {
     public int animState = 0;
     public float health = 3;
     private bool moving;
-    private int direction = 1;
+    public int direction = 1;
 
     public GameObject networkCharacter;
     public Text pingText;
