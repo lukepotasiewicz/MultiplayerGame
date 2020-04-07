@@ -6,6 +6,7 @@ public class attack : MonoBehaviour {
 
     public int blockingState;
     public int attackingState;
+    public bool jumpAttacks;
     
     public bool canHit = true;
     public AudioClip blockSound;
@@ -15,6 +16,7 @@ public class attack : MonoBehaviour {
         int animState = parent.animState;
         int direction = parent.direction;
         if (other.gameObject.tag == "Player" && canHit && animState == attackingState) {
+            float extraDamage = jumpAttacks ? gameObject.GetComponentInParent<Rigidbody2D>().velocity.y * 0.2f : 0;
             // true if player isn't blocking
             if (other.GetComponentInParent<Character>().animState == blockingState) {
                 // true if players are facing each other
@@ -25,11 +27,11 @@ public class attack : MonoBehaviour {
                 }
                 else {
                     // hit
-                    other.GetComponentInParent<Character>().health -= 1;
+                    other.GetComponentInParent<Character>().health -= (1.0f + Mathf.Abs(extraDamage));
                 }
             } else {
                 // hit
-                other.GetComponentInParent<Character>().health -= 1;
+                other.GetComponentInParent<Character>().health -= (1.0f + Mathf.Abs(extraDamage));
             }
             canHit = false;
             StartCoroutine(damageWait());

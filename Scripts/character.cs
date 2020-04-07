@@ -149,12 +149,8 @@ public class Character : MonoBehaviour {
     }
 
     async void Update() {
-        if (!stunned) {
-            stunnedIndicator.transform.localScale = new Vector2(0, 1);
-        }
-        else {
-            stunnedIndicator.transform.localScale = new Vector2(1, 1);
-        }
+        // show or hide stunned indicator
+        stunnedIndicator.transform.localScale = new Vector2(stunned ? 1 : 0, 1);
 
         nameText.text = characterName;
         nameTextObj.transform.position =

@@ -17,6 +17,7 @@ public class NetworkCharacter : MonoBehaviour {
     public Rigidbody2D rb2d;
     private Animator anim;
     public GameObject nameTextObj;
+    public GameObject stunnedIndicator;
     private Text nameText;
 
     // Start is called before the first frame update
@@ -34,12 +35,14 @@ public class NetworkCharacter : MonoBehaviour {
         nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));
         direction = Int32.Parse(myData[5]);
         animState = Int32.Parse(myData[6]);
-        health = Int32.Parse(myData[7]);
+        health = float.Parse(myData[7]);
         var blockedCharacters = myData[8];
         // check if this network character was recently blocked
         stunned = Array.IndexOf(blockedCharacters.Split('|'), name) != -1;
         stunned = stunned || Array.IndexOf(Character.createBlockedString().Split('|'), name) != -1;
-        
+        // show or hide stunned indicator
+        stunnedIndicator.transform.localScale = new Vector2(stunned ? 1 : 0, 1);
+
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
             Quaternion.Euler(new Vector3(0, 0, 0))
@@ -50,7 +53,7 @@ public class NetworkCharacter : MonoBehaviour {
         if (animState < 10) {
             anim.SetInteger("animState", animState);
         }
-        anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 0.1);
+        anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 1);
         rb2d.velocity = ServerDataToVelocity(myData);
         heathBar.transform.localScale = new Vector2( health / 3, 1);
     }
