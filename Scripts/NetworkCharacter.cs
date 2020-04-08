@@ -12,6 +12,8 @@ public class NetworkCharacter : MonoBehaviour {
     public string name;
     public bool stunned = false;
 
+    private float previousHealth;
+
     public GameObject heathBar;
     
     public Rigidbody2D rb2d;
@@ -19,6 +21,7 @@ public class NetworkCharacter : MonoBehaviour {
     public GameObject nameTextObj;
     public GameObject stunnedIndicator;
     public AudioClip blockSound;
+    public AudioClip damageSound;
     private Text nameText;
 
     // Start is called before the first frame update
@@ -48,6 +51,11 @@ public class NetworkCharacter : MonoBehaviour {
         if (!wasStunned && stunned) {
             gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
         }
+        // play audio if damage was taken
+        if (previousHealth > health + 0.5f) {
+            gameObject.GetComponent<AudioSource>().PlayOneShot(damageSound, 0.8f);
+        }
+        previousHealth = health;
 
         gameObject.transform.SetPositionAndRotation(
             ServerDataToPosition(myData),
@@ -61,7 +69,7 @@ public class NetworkCharacter : MonoBehaviour {
         }
         anim.SetBool("walking", Math.Abs(ServerDataToVelocity(myData).x) > 1);
         rb2d.velocity = ServerDataToVelocity(myData);
-        heathBar.transform.localScale = new Vector2( health / 3, 1);
+        heathBar.transform.localScale = new Vector2( health / Character.maxHealth, 1);
     }
 
     public static Vector2 ServerDataToPosition(string[] sArray) {

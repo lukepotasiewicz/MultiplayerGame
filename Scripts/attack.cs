@@ -10,6 +10,7 @@ public class attack : MonoBehaviour {
     
     public bool canHit = true;
     public AudioClip blockSound;
+    public AudioClip damageSound;
 
     void OnTriggerStay2D(Collider2D other) {
         var parent = transform.parent.gameObject.GetComponent<NetworkCharacter>();
@@ -28,10 +29,13 @@ public class attack : MonoBehaviour {
                 else {
                     // hit
                     other.GetComponentInParent<Character>().health -= (1.0f + Mathf.Abs(extraDamage));
+                    gameObject.GetComponent<AudioSource>().PlayOneShot(damageSound, 0.8f);
                 }
             } else {
                 // hit
                 other.GetComponentInParent<Character>().health -= (1.0f + Mathf.Abs(extraDamage));
+                gameObject.GetComponent<AudioSource>().PlayOneShot(damageSound, 0.8f);
+                Debug.Log("playsound");
             }
             canHit = false;
             StartCoroutine(damageWait());
