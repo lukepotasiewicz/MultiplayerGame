@@ -41,16 +41,23 @@ public class NetworkCharacter : MonoBehaviour {
         animState = Int32.Parse(myData[6]);
         health = float.Parse(myData[7]);
         var blockedCharacters = myData[8];
-        // check if this network character was recently blocked
+        
         bool wasStunned = stunned; 
-        stunned = Array.IndexOf(blockedCharacters.Split('|'), name) != -1;
+        stunned = false;
+        // check if this network character was recently blocked by another client
+        foreach (var character in Character.serverData) {
+            stunned = stunned || Array.IndexOf(character.Split(','), name) > 6;
+        }
+        // check if this network character was recently blocked by this client
         stunned = stunned || Array.IndexOf(Character.createBlockedString().Split('|'), name) != -1;
         // show or hide stunned indicator
         stunnedIndicator.transform.localScale = new Vector2(stunned ? 1 : 0, 1);
+        
         // play audio if was just stunned
         if (!wasStunned && stunned) {
             gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
         }
+        
         // play audio if damage was taken
         if (previousHealth > health + 0.5f) {
             gameObject.GetComponent<AudioSource>().PlayOneShot(damageSound, 0.8f);

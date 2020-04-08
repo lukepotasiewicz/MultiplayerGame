@@ -475,7 +475,7 @@ MonoBehaviour:
   sendingData: 0
   connectionCreated: 0
   animState: 0
-  health: 5
+  health: 4
   direction: 1
   stunned: 0
   networkCharacter: {fileID: 184634227672380312, guid: 246cfe6884dc4814690c03e82a95329b,
