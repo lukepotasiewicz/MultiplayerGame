@@ -42,7 +42,7 @@ public class NetworkCharacter : MonoBehaviour {
         health = float.Parse(myData[7]);
         var blockedCharacters = myData[8];
         
-        bool wasStunned = stunned; 
+        bool wasStunned = stunned;
         stunned = false;
         // check if this network character was recently blocked by another client
         foreach (var character in Character.serverData) {

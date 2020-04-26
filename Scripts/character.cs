@@ -159,6 +159,16 @@ public class Character : MonoBehaviour {
             gameObject.transform.localScale = new Vector2(direction, 1);
         }
 
+        // character is in wind, make them float
+        if (gameObject.transform.position.x > 40.8 && gameObject.transform.position.x < 45 && gameObject.transform.position.y < -5) {
+            if (movement.y >= 15) {
+                movement.y = 15;
+            }
+            else {
+                movement.y += 1;
+            }
+        }
+
         if (!moving && grounded) {
             rb2d.velocity = new Vector2(rb2d.velocity.x * 0.8f, movement.y);
         }
@@ -166,10 +176,12 @@ public class Character : MonoBehaviour {
             rb2d.velocity = new Vector2(rb2d.velocity.x * 0.96f, movement.y);
         }
         
+        
         if (health > maxHealth) {
             health = maxHealth;
         }
-        else if (health <= 0) {
+        // if character loses all health, or falls off the map
+        else if (health <= 0 || gameObject.transform.position.y < -50) {
             gameObject.transform.SetPositionAndRotation(
                 new Vector3(0, 0, 0),
                 Quaternion.Euler(new Vector3(0, 0, 0))
