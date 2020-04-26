@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TextInput : MonoBehaviour {
-	public static string IP = "";
+public class NameTextInput : MonoBehaviour {
     public static string NAME = "";
     void Start ()
     {
         var input = gameObject.GetComponent<InputField>();
-        input.onEndEdit.AddListener(SetIp);
+        input.onEndEdit.AddListener(SetName);
     }
 
-    private void SetIp(string userInfo) {
-        IP = userInfo.Split(',')[0];
-        NAME = userInfo.Split(',')[1];
+    private void SetName(string userInfo) {
+        NAME = userInfo;
     }
 }

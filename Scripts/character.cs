@@ -5,7 +5,8 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using client;
 using UnityEngine.UI;
-using static TextInput;
+using static IpTextInput;
+using static NameTextInput;
 
 public class Character : MonoBehaviour {
     private const string END_CONNECTION = "EC";
@@ -29,6 +30,9 @@ public class Character : MonoBehaviour {
     public GameObject nameTextObj;
     public GameObject stunnedIndicator;
     public AudioClip blockSound;
+    public Button playButton;
+    public GameObject startingCanvas;
+    public GameObject startingOverlay;
     private Text nameText;
 
     public GameObject[] networkCharacters = new GameObject[10];
@@ -48,6 +52,19 @@ public class Character : MonoBehaviour {
         rb2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
         nameText = nameTextObj.GetComponent<Text>();
+        // play button
+        Button playButtonLocal = playButton.GetComponent<Button>();
+        playButtonLocal.onClick.AddListener(attemptConnection);
+    }
+
+    void attemptConnection() {
+        if (!connectionCreated && IP.Length > 0 && NAME.Length > 0) {
+            characterName = NAME;
+            NetworkClient.Connect(IP);
+            connectionCreated = true;
+            startingCanvas.transform.localScale = new Vector2(0, 0);
+            startingOverlay.transform.localScale = new Vector2(0, 0);
+        }
     }
 
     void OnApplicationQuit() {
@@ -208,11 +225,6 @@ public class Character : MonoBehaviour {
         
         heathBar.transform.localScale = new Vector2(health / maxHealth, 1);
 
-        if (!connectionCreated && TextInput.IP.Length > 1) {
-            characterName = TextInput.NAME;
-            NetworkClient.Connect(TextInput.IP);
-            connectionCreated = true;
-        }
 
         if (connectionCreated && !sendingData) {
             var position = gameObject.transform.position;
