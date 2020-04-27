@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +34,21 @@ public class NetworkCharacter : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        string[] myData = Character.serverData[id].Split(',');
+        string[] myData;
+        try {
+            myData = Character.serverData[id].Split(',');
+            if (myData[0] == Character.END_CONNECTION) {
+                // this character has disconnected
+                Destroy(gameObject);
+                return;
+            }
+        }
+        catch (Exception e){
+            Debug.Log(e);
+            // this character should not exist
+            Destroy(gameObject);
+            return;
+        }
         nameText.text = myData[0];
         name = myData[0];
         nameTextObj.transform.position = Camera.main.WorldToScreenPoint(this.transform.position + new Vector3(0, 2.1f, 0));

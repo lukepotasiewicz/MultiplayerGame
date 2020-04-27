@@ -9,7 +9,7 @@ using static IpTextInput;
 using static NameTextInput;
 
 public class Character : MonoBehaviour {
-    private const string END_CONNECTION = "EC";
+    public static string END_CONNECTION = "EC";
     public float speed;
     public string characterName;
     public bool grounded;
