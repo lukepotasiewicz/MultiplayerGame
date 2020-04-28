@@ -38,6 +38,7 @@ public class Character : MonoBehaviour {
     public GameObject[] networkCharacters = new GameObject[10];
     public static string[] serverData = new string[0];
     public int numPlayers = 0;
+    public int numPlayersPrevious = 0;
 
     public Rigidbody2D rb2d;
 
@@ -75,26 +76,29 @@ public class Character : MonoBehaviour {
 
     // Update is called once per frame
     void FixedUpdate() {
-        
-        if (serverData.Length > 0) {
-            for (var i = numPlayers; i < serverData.Length; i++) {
+        // If there is a new player connected, we must create a networkCharacter
+        if (numPlayers > numPlayersPrevious) {
+            for (var i = 0; i < serverData.Length; i++) {
                 if (serverData[i] != END_CONNECTION) {
+                    Destroy(networkCharacters[i]);
                     networkCharacters[i] = Instantiate(networkCharacter, Vector3.zero, Quaternion.identity);
                     networkCharacters[i].GetComponentInParent<NetworkCharacter>().id = i;
                 }
             }
-            numPlayers = serverData.Length;
+
         }
+        numPlayersPrevious = numPlayers;
 
         moving = false;
         Vector2 movement = new Vector2(rb2d.velocity.x, rb2d.velocity.y);
 
-        bool wasStunned = stunned; 
+        bool wasStunned = stunned;
         stunned = false;
         // check to see if you are stunned
         foreach (var character in serverData) {
             stunned = stunned || Array.IndexOf(character.Split(','), characterName) > 6;
         }
+
         // play audio if was just stunned
         if (!wasStunned && stunned) {
             gameObject.GetComponent<AudioSource>().PlayOneShot(blockSound, 0.8f);
@@ -142,9 +146,7 @@ public class Character : MonoBehaviour {
                         anim.SetInteger("animState", 0);
                         animState = 0;
                     }, 0.4f));
-                    StartCoroutine(delay(() => {
-                        canAttack = true;
-                    }, 0.6f));
+                    StartCoroutine(delay(() => { canAttack = true; }, 0.6f));
                 }
 
                 // attack 2
@@ -157,9 +159,7 @@ public class Character : MonoBehaviour {
                         anim.SetInteger("animState", 0);
                         animState = 0;
                     }, 0.4f));
-                    StartCoroutine(delay(() => {
-                        canAttack = true;
-                    }, 0.6f));
+                    StartCoroutine(delay(() => { canAttack = true; }, 0.6f));
                 }
             }
 
@@ -177,7 +177,8 @@ public class Character : MonoBehaviour {
         }
 
         // character is in wind, make them float
-        if (gameObject.transform.position.x > 40.8 && gameObject.transform.position.x < 45 && gameObject.transform.position.y < -5) {
+        if (gameObject.transform.position.x > 40.8 && gameObject.transform.position.x < 45 &&
+            gameObject.transform.position.y < -5) {
             if (movement.y >= 15) {
                 movement.y = 15;
             }
@@ -192,8 +193,8 @@ public class Character : MonoBehaviour {
         else if (!moving && !grounded) {
             rb2d.velocity = new Vector2(rb2d.velocity.x * 0.96f, movement.y);
         }
-        
-        
+
+
         if (health > maxHealth) {
             health = maxHealth;
         }
@@ -222,7 +223,7 @@ public class Character : MonoBehaviour {
         if (Time.time * 1000 - timeStart > 1000 && connectionCreated) {
             NetworkClient.Send("hack fix");
         }
-        
+
         heathBar.transform.localScale = new Vector2(health / maxHealth, 1);
 
 
@@ -271,18 +272,25 @@ public class Character : MonoBehaviour {
 
 
     async Task<int> sendData(string data) {
-        // try {
         string response = NetworkClient.Receive();
         if (response.Length > 1) {
+            // check how many connected characters there are
+            string connectedPlayers = response.Replace(":EC", "")
+                .Replace("EC:", "")
+                .Replace("EC", "");
+            // if there are 0 players, set numPlayers to 0
+            if (connectedPlayers.Length == 0) {
+                numPlayers = 0;
+            }
+            // if there are more than one player, then set numPlayers accordingly
+            else {
+                numPlayers = connectedPlayers.Split(':').Length;
+            }
             serverData = response.Split(':');
         }
 
         NetworkClient.Send(data);
         sendingData = false;
-        // }
-        // catch (Exception e) {
-        //     Debug.Log(e);
-        // }
         return 0;
     }
 }

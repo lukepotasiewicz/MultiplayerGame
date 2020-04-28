@@ -2529,7 +2529,7 @@ GameObject:
   - component: {fileID: 762264365}
   - component: {fileID: 762264364}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: Starting UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2731,7 +2731,7 @@ GameObject:
   - component: {fileID: 884353373}
   - component: {fileID: 884353372}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: uiBlockerCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4634,7 +4634,7 @@ GameObject:
   - component: {fileID: 1792490161}
   - component: {fileID: 1792490160}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: uiBlocker2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

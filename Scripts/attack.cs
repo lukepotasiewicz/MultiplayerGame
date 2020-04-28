@@ -35,7 +35,6 @@ public class attack : MonoBehaviour {
                 // hit
                 other.GetComponentInParent<Character>().health -= (1.0f + Mathf.Abs(extraDamage));
                 gameObject.GetComponent<AudioSource>().PlayOneShot(damageSound, 0.8f);
-                Debug.Log("playsound");
             }
             canHit = false;
             StartCoroutine(damageWait());
